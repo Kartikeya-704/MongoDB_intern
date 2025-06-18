@@ -1,0 +1,16 @@
+{
+  "name": "gym-registration-tracker", [cite: 2]
+  "version": "1.0.0", [cite: 2]
+  "description": "A simple gym member registration system using Node.js, Express, and MongoDB", [cite: 2]
+  "main": "server.js", [cite: 2]
+  "scripts": {
+    "start": "node server.js" [cite: 2]
+  },
+  "author": "Your Name", [cite: 2]
+  "license": "ISC", [cite: 2]
+  "dependencies": {
+    "body-parser": "^1.20.2", [cite: 2]
+    "express": "^4.18.2", [cite: 2]
+    "mongoose": "^7.6.1" [cite: 2]
+  }
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gym Members</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2>Registered Members</h2>
+  <ul id="memberList">
+    <!-- Members will be loaded here by JavaScript -->
+  </ul>
+
+  <script>
+    // This script assumes your backend provides /users API and a /users/delete/:username API
+    // This is a simplified fetch, for actual implementation, you'd integrate the full frontend logic.
+    function fetchAndRenderMembers() {
+      fetch('/users')
+        .then(response => response.json())
+        .then(users => {
+          const memberList = document.getElementById('memberList');
+          memberList.innerHTML = ''; // Clear existing list
+          if (users.length === 0) {
+            memberList.innerHTML = '<li>No members registered yet.</li>';
+          } else {
+            users.forEach(user => {
+              const listItem = document.createElement('li');
+              // Assuming user object has username, membershipType, expiryDate
+              const formattedExpiry = new Date(user.expiryDate).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+              listItem.innerHTML = `
+                <div class="member-details">
+                    <span><strong>Username:</strong> ${user.username}</span>
+                    <span><strong>Type:</strong> ${user.membershipType}</span>
+                    <span><strong>Expires:</strong> ${formattedExpiry}</span>
+                </div>
+                <button class="delete-btn" data-username="${user.username}">Delete</button>
+              `;
+              memberList.appendChild(listItem);
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(button => {
+              button.addEventListener('click', (event) => {
+                const usernameToDelete = event.target.dataset.username;
+                if (confirm(`Are you sure you want to delete ${usernameToDelete}?`)) { // In real app, use custom modal
+                  deleteMember(usernameToDelete);
+                }
+              });
+            });
+          }
+        })
+        .catch(error => console.error('Error fetching users:', error));
+    }
+
+    function deleteMember(username) {
+        fetch(`/users/${username}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => { throw new Error(text) });
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert(data.message); // In real app, use custom modal
+            fetchAndRenderMembers(); // Refresh the list
+        })
+        .catch(error => console.error('Error deleting member:', error));
+    }
+
+    // Call fetchAndRenderMembers when the page loads
+    fetchAndRenderMembers();
+  </script>
+  <p><a href="/">Back to Registration</a></p>
+</body>
+</html>
