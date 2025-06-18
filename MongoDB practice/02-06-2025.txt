@@ -1,0 +1,94 @@
+use vit
+db.products.insertMany([
+  {
+    _id: 1,
+    name: "zPhone",
+    price: 749,
+    releaseDate: ISODate("2012-06-10T00:00:00Z"),
+    spec: { ram: 6, screen: 6.1, cpu: 2.88 },
+    color: ["silver", "black"],
+    storage: [64, 128, 512]
+  },
+  {
+    _id: 2,
+    name: "zTablet",
+    price: 949,
+    releaseDate: ISODate("2013-10-01T00:00:00Z"),
+    spec: { ram: 16, screen: 10.5, cpu: 3.99 },
+    color: ["silver", "black", "green"],
+    storage: [128, 256, 512]
+  },
+  {
+    _id: 3,
+    name: "MegaTab",
+    price: 949,
+    releaseDate: ISODate("2016-03-20T00:00:00Z"),
+    spec: { ram: 12, screen: 11.0, cpu: 3.66 },
+    color: ["blue"],
+    storage: [32, 64, 128]
+  },
+  {
+    _id: 4,
+    name: "SmartSlate",
+    price: 799,
+    releaseDate: ISODate("2021-08-11T00:00:00Z"),
+    spec: { ram: 10, screen: 11.5, cpu: 2.66 },
+    color: ["silver", "gold", "gray"],
+    storage: [128, 256, 1024]
+  },
+  {
+    _id: 5,
+    name: "LitePhone",
+    price: 549,
+    releaseDate: ISODate("2023-10-05T00:00:00Z"),
+    spec: { ram: 4, screen: 5.9, cpu: 1.88 },
+    color: ["silver", "gray"],
+    storage: [128, 256]
+  }
+])
+db.products.find(
+  { color: { $all: ["silver", "black"] } },
+  { name: 1, color: 1 }
+)
+db.products.find(
+  { storage: { $elemMatch: { $lt: 128 } } },
+  { name: 1, storage: 1 }
+)
+db.products.find(
+  { storage: { $lt: 128 } },
+  { storage: 1 }
+)
+db.products.find(
+  { price: { $exists: true } },
+  { name: 1, price: 1 }
+).sort({ price: 1 })
+db.products.find(
+  { price: { $exists: true } },
+  { name: 1, price: 1 }
+).sort({ price: 1, name: 1 })
+db.products.find(
+  { releaseDate: { $exists: true } },
+  { name: 1, releaseDate: 1 }
+).sort({ releaseDate: 1 })
+db.products.find(
+  {},
+  { name: 1, spec: 1 }
+).sort({ "spec.ram": 1 })
+db.products.find(
+  {},
+  { name: 1, price: 1 }
+).sort({ price: -1 }).limit(1)
+
+db.products.find(
+  { releaseDate: { $exists: true } },
+  { name: 1, releaseDate: 1 }
+).sort({ releaseDate: 1 }).skip(2).limit(5)
+db.products.updateOne(
+  { _id: 1 },
+  { $set: { price: 949 } }
+)
+
+db.products.updateOne(
+  { price: 949 },
+  { $set: { price: null } }
+)

@@ -1,0 +1,141 @@
+use mobileStore
+switched to db mobileStore
+
+db.items.insertMany([
+    { "_id" : 1, "model" : "gPhone", "price" : 749, "releaseDate": ISODate("2012-06-11"), "spec" : { "ram" : 6, "screen" : 6.1, "cpu" : 2.4 }, "color":["black","silver"], "storage":[64,128,256] },
+    { "_id" : 2, "model" : "gTablet", "price" : 899, "releaseDate": ISODate("2013-10-01"), "spec" : { "ram" : 8, "screen" : 10.1, "cpu" : 3.1 }, "color":["white","blue","green"], "storage":[128,256,512] },
+    { "_id" : 3, "model" : "ProTablet", "price" : 950, "releaseDate": ISODate("2016-02-14"), "spec" : { "ram" : 12, "screen" : 9.6, "cpu" : 3.8 }, "color":["gray"], "storage":[32,64,128] },
+    { "_id" : 4, "model" : "ProSlate", "price" : 720, "releaseDate": ISODate("2021-07-14"), "spec" : { "ram" : 10, "screen" : 11.1, "cpu" : 2.9 }, "color":["silver","black","red"], "storage":[128,256,512] },
+    { "_id" : 5, "model" : "gSmart", "price" : 620, "releaseDate": ISODate("2023-11-14"), "spec" : { "ram" : 6, "screen" : 5.8, "cpu" : 1.9 }, "color":["white","red","black"], "storage":[64,128] }
+])
+
+db.items.updateOne({ _id: 1 }, { $set: { price: 749 } })
+
+db.items.updateOne(
+  { _id: 4 },
+  {
+    $set: {
+      "spec.ram": 12,
+      "spec.screen": 12.2,
+      "spec.cpu": 3.95
+    }
+  }
+)
+
+db.items.updateOne(
+  { _id: 4 },
+  {
+    $set: {
+      "storage.0": 16,
+      "storage.1": 64
+    }
+  }
+)
+
+db.items.updateMany(
+  { price: { $gt: 800 } },
+  {
+    $set: {
+      "spec.ram": 32,
+      "spec.screen": 10.0,
+      "spec.cpu": 5.99
+    }
+  }
+)
+
+db.items.updateMany(
+  {
+    _id: { $in: [1, 2, 3] }
+  },
+  {
+    $set: {
+      "storage.0": 32,
+      "storage.1": 64
+    }
+  }
+)
+
+use priceUpdate
+switched to db priceUpdate
+
+db.items.insertMany([
+    { "_id" : 1, "model" : "gPhone", "price" : 749, "releaseDate": ISODate("2012-06-11"), "spec" : { "ram" : 6, "screen" : 6.1, "cpu" : 2.4 }, "color":["black","silver"], "storage":[64,128,256] },
+    { "_id" : 2, "model" : "gTablet", "price" : 899, "releaseDate": ISODate("2013-10-01"), "spec" : { "ram" : 8, "screen" : 10.1, "cpu" : 3.1 }, "color":["white","blue","green"], "storage":[128,256,512] },
+    { "_id" : 3, "model" : "ProTablet", "price" : 950, "releaseDate": ISODate("2016-02-14"), "spec" : { "ram" : 12, "screen" : 9.6, "cpu" : 3.8 }, "color":["gray"], "storage":[32,64,128] },
+    { "_id" : 4, "model" : "ProSlate", "price" : 720, "releaseDate": ISODate("2021-07-14"), "spec" : { "ram" : 10, "screen" : 11.1, "cpu" : 2.9 }, "color":["silver","black","red"], "storage":[128,256,512] },
+    { "_id" : 5, "model" : "gSmart", "price" : 620, "releaseDate": ISODate("2023-11-14"), "spec" : { "ram" : 6, "screen" : 5.8, "cpu" : 1.9 }, "color":["white","red","black"], "storage":[64,128] }
+])
+
+db.items.updateOne({ _id: 1 }, { $inc: { price: 100 } })
+db.items.updateOne({ _id: 1 }, { $inc: { price: -200 } })
+db.items.updateOne({ _id: 1 }, { $inc: { price: 50, "spec.ram": 2 } })
+
+use maxPriceDB
+switched to db maxPriceDB
+
+db.items.insertMany([
+    { "_id" : 1, "model" : "gPhone", "price" : 749, "releaseDate": ISODate("2012-06-11"), "spec" : { "ram" : 6, "screen" : 6.1, "cpu" : 2.4 }, "color":["black","silver"], "storage":[64,128,256] },
+    { "_id" : 2, "model" : "gTablet", "price" : 899, "releaseDate": ISODate("2013-10-01"), "spec" : { "ram" : 8, "screen" : 10.1, "cpu" : 3.1 }, "color":["white","blue","green"], "storage":[128,256,512] },
+    { "_id" : 3, "model" : "ProTablet", "price" : 950, "releaseDate": ISODate("2016-02-14"), "spec" : { "ram" : 12, "screen" : 9.6, "cpu" : 3.8 }, "color":["gray"], "storage":[32,64,128] },
+    { "_id" : 4, "model" : "ProSlate", "price" : 720, "releaseDate": ISODate("2021-07-14"), "spec" : { "ram" : 10, "screen" : 11.1, "cpu" : 2.9 }, "color":["silver","black","red"], "storage":[128,256,512] },
+    { "_id" : 5, "model" : "gSmart", "price" : 620, "releaseDate": ISODate("2023-11-14"), "spec" : { "ram" : 6, "screen" : 5.8, "cpu" : 1.9 }, "color":["white","red","black"], "storage":[64,128] }
+])
+
+db.items.updateOne(
+  { _id: 1 },
+  {
+    $max: {
+      price: 800
+    }
+  }
+)
+
+use multiplyStorage
+switched to db multiplyStorage
+
+db.items.insertMany([
+    { "_id" : 1, "model" : "gPhone", "price" : 749, "releaseDate": ISODate("2012-06-11"), "spec" : { "ram" : 6, "screen" : 6.1, "cpu" : 2.4 }, "color":["black","silver"], "storage":[64,128,256] },
+    { "_id" : 2, "model" : "gTablet", "price" : 899, "releaseDate": ISODate("2013-10-01"), "spec" : { "ram" : 8, "screen" : 10.1, "cpu" : 3.1 }, "color":["white","blue","green"], "storage":[128,256,512] },
+    { "_id" : 3, "model" : "ProTablet", "price" : 950, "releaseDate": ISODate("2016-02-14"), "spec" : { "ram" : 12, "screen" : 9.6, "cpu" : 3.8 }, "color":["gray"], "storage":[32,64,128] },
+    { "_id" : 4, "model" : "ProSlate", "price" : 720, "releaseDate": ISODate("2021-07-14"), "spec" : { "ram" : 10, "screen" : 11.1, "cpu" : 2.9 }, "color":["silver","black","red"], "storage":[128,256,512] },
+    { "_id" : 5, "model" : "gSmart", "price" : 620, "releaseDate": ISODate("2023-11-14"), "spec" : { "ram" : 6, "screen" : 5.8, "cpu" : 1.9 }, "color":["white","red","black"], "storage":[64,128] }
+])
+
+db.items.updateOne(
+  { _id: 1 },
+  {
+    $mul: {
+      "storage.0": 2,
+      "storage.1": 2,
+      "storage.2": 2
+    }
+  }
+)
+
+use unsetPrice
+switched to db unsetPrice
+
+db.items.insertMany([
+    { "_id" : 1, "model" : "gPhone", "price" : 749, "releaseDate": ISODate("2012-06-11"), "spec" : { "ram" : 6, "screen" : 6.1, "cpu" : 2.4 }, "color":["black","silver"], "storage":[64,128,256] },
+    ...
+])
+
+db.items.updateOne({ _id: 1 }, { $unset: { price: "" } })
+
+use renameKey
+switched to db renameKey
+
+db.items.insertMany([
+    { "_id" : 1, "modl" : "gPhone", "price" : 749, ... }
+    ...
+])
+
+db.items.updateMany({}, { $rename: { modl: "model" } })
+
+use upsertTest
+switched to db upsertTest
+
+db.items.insertMany([...])
+
+db.items.updateMany({ _id: 6 }, { $set: { price: 999 } })
+db.items.updateOne({ _id: 7 }, { $set: { price: 999 } }, { upsert: true })

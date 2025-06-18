@@ -1,0 +1,43 @@
+db.sales.insertMany([...])
+db.sales.aggregate([
+  { $group: { _id: "$item", maxQty: { $max: { $multiply: ["$quantity", "$price"] } } } }
+])
+db.sales.aggregate([
+  { $group: { _id: "$item", maxQty: { $max: "$quantity" } } }
+])
+db.sales.aggregate([
+  { $group: { _id: null, maxQty: { $max: "$quantity" } } },
+  { $project: { _id: 0 } }
+])
+db.sales.aggregate([
+  { $addFields: { totalValue: { $multiply: ["$price", "$quantity"] } } },
+  { $sort: { totalValue: -1 } },
+  { $limit: 1 },
+  { $project: { item: 1, totalValue: 1, _id: 0 } }
+])
+db.sales.aggregate([
+  { $addFields: { totalSale: { $multiply: ["$price", "$quantity"] } } },
+  { $sort: { item: 1, totalSale: -1 } },
+  { $group: {
+      _id: "$item",
+      salesList: { $push: "$totalSale" }
+  }},
+  { $project: {
+      secondMaxSale: { $arrayElemAt: ["$salesList", 1] }
+  }}
+])
+db.sales.createIndex({item:1});
+db.sales.dropIndex({item:1});
+db.users.insertMany([
+  { email: "john@test.com", name: "john" },
+  { email: "john@test.com", name: "johny" },
+  ...
+])
+db.users.deleteOne({ name: "johny", email: "john@test.com" });
+db.users.createIndex({email:1},{unique:true});
+db.locations.insertOne({ lat: ..., long: ... });
+db.locations.createIndex({lat:1, long:1}, {unique:true});
+MongoServerError[Location2942500]: Invalid $project :: caused by :: $sortArray requires an object as an argument, found: string
+{ $sortArray: "$sales" } // ❌ Incorrect
+db.collection.dropIndexes()
+// Error: NamespaceNotFound — likely typo: `collection` doesn't exist
