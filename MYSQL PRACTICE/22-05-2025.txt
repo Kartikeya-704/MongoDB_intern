@@ -1,0 +1,100 @@
+CREATE DATABASE IF NOT EXISTS firm_db;
+USE firm_db;
+
+CREATE TABLE Employee (
+    EMP_ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    FIRST_NAME CHAR(25),
+    LAST_NAME CHAR(25),
+    SALARY INT,
+    JOINING_DATE DATETIME,
+    DEPARTMENT CHAR(25)
+);
+
+USE firm_db;
+
+INSERT INTO Employee 
+(EMP_ID, FIRST_NAME, LAST_NAME, SALARY, JOINING_DATE, DEPARTMENT) VALUES
+    (201, 'Aarav', 'Mehta', 120000, '2015-03-20 09:00:00', 'Tech'),
+    (202, 'Sneha', 'Reddy', 95000, '2015-07-11 09:00:00', 'HR'),
+    (203, 'Kabir', 'Gupta', 310000, '2015-03-20 09:00:00', 'Tech'),
+    (204, 'Ananya', 'Shah', 480000, '2015-03-20 09:00:00', 'HR'),
+    (205, 'Neel', 'Joshi', 470000, '2015-07-11 09:00:00', 'HR'),
+    (206, 'Tanvi', 'Pillai', 190000, '2015-07-11 09:00:00', 'Finance'),
+    (207, 'Rahul', 'Das', 73000, '2015-02-20 09:00:00', 'Finance'),
+    (208, 'Isha', 'Rana', 91000, '2015-05-11 09:00:00', 'HR');
+
+SELECT * FROM Employee;
+
+SELECT COUNT(*) FROM Employee WHERE DEPARTMENT = 'HR';
+
+SELECT MAX(DEPARTMENT) FROM Employee;
+
+SELECT DEPARTMENT, SUM(SALARY) AS TotalSalary
+FROM Employee
+GROUP BY DEPARTMENT
+ORDER BY TotalSalary ASC
+LIMIT 1;
+
+SELECT DEPARTMENT, COUNT(*) AS DeptCount
+FROM Employee
+GROUP BY DEPARTMENT
+HAVING COUNT(*) > 3;
+
+SELECT DEPARTMENT, COUNT(*) AS DeptCount
+FROM Employee
+GROUP BY DEPARTMENT
+HAVING COUNT(*) > 3
+ORDER BY DeptCount DESC
+LIMIT 1 OFFSET 1;
+
+SELECT FIRST_NAME, DEPARTMENT
+FROM Employee
+WHERE SALARY > (SELECT AVG(SALARY) FROM Employee);
+
+SELECT DEPARTMENT
+FROM Employee
+GROUP BY DEPARTMENT
+HAVING COUNT(*) > (
+    SELECT AVG(dept_count) FROM (
+        SELECT COUNT(*) AS dept_count FROM Employee GROUP BY DEPARTMENT
+    ) AS DeptCounts
+);
+
+-- Student and Address join examples
+CREATE TABLE Learner (
+    L_ID INT,
+    L_NAME VARCHAR(25)
+);
+
+INSERT INTO Learner VALUES 
+(301, 'Ravi'), 
+(302, 'Sara'),
+(303, 'Om'),
+(304, 'Priya');
+
+CREATE TABLE Location (
+    L_ID INT,
+    L_ADDRESS VARCHAR(25)
+);
+
+INSERT INTO Location VALUES 
+(301, 'Bangalore'),
+(304, 'Hyderabad'),
+(305, 'Mumbai');
+
+SELECT * FROM Learner CROSS JOIN Location;
+
+SELECT * FROM Learner INNER JOIN Location ON Learner.L_ID = Location.L_ID;
+
+SELECT * FROM Learner LEFT OUTER JOIN Location ON Learner.L_ID = Location.L_ID;
+
+SELECT * FROM Learner RIGHT OUTER JOIN Location ON Learner.L_ID = Location.L_ID;
+
+-- 5th highest salary
+SELECT SALARY
+FROM Employee E1
+WHERE (
+    SELECT COUNT(DISTINCT E2.SALARY)
+    FROM Employee E2
+    WHERE E2.SALARY >= E1.SALARY
+) = 5;

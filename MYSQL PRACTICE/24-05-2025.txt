@@ -1,0 +1,136 @@
+SHOW DATABASES;
+CREATE DATABASE campus_db;
+USE campus_db;
+
+CREATE TABLE learners (
+    learner_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100),
+    email_id VARCHAR(100),
+    major VARCHAR(50)
+);
+
+CREATE TABLE modules (
+    module_id INT AUTO_INCREMENT PRIMARY KEY,
+    module_title VARCHAR(100),
+    credit_value INT
+);
+
+CREATE TABLE terms (
+    term_id INT AUTO_INCREMENT PRIMARY KEY,
+    learner_id INT,
+    term_label VARCHAR(20),
+    academic_year INT,
+    FOREIGN KEY (learner_id) REFERENCES learners(learner_id)
+);
+
+CREATE TABLE results (
+    result_id INT AUTO_INCREMENT PRIMARY KEY,
+    term_id INT,
+    module_id INT,
+    assessment_type VARCHAR(50),
+    marks_obtained DECIMAL(5,2),
+    FOREIGN KEY (term_id) REFERENCES terms(term_id),
+    FOREIGN KEY (module_id) REFERENCES modules(module_id)
+);
+
+INSERT INTO learners (full_name, email_id, major) VALUES
+('Kiran', 'kiran@campus.edu.in', 'BSc'),
+('Meera', 'meera@campus.edu.in', 'MSc');
+
+INSERT INTO modules (module_title, credit_value) VALUES
+('Data Mining', 4),
+('Machine Learning', 3);
+
+INSERT INTO terms (learner_id, term_label, academic_year) VALUES
+(1, 'Autumn', 2025),
+(2, 'Autumn', 2025);
+
+INSERT INTO results (term_id, module_id, assessment_type, marks_obtained) VALUES
+(1, 1, 'Quiz', 81.5),
+(1, 1, 'Project', 89.0),
+(2, 2, 'Quiz', 78.0),
+(2, 2, 'Project', 82.5);
+
+package connection;
+
+import java.sql.*;
+
+public class DBConn {
+    public static void main(String[] args){
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/campus_db", "root", "yourpassword");
+            System.out.println("Connected: " + con);
+
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM modules");
+
+            while (rs.next()) {
+                System.out.println(rs.getInt(1) + " " + rs.getString(2) + " " + rs.getInt(3));
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println("Connection error. Please verify credentials.");
+            e.printStackTrace();
+        }
+    }
+}
+
+
+package operations;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class DatabaseLink {
+    public Connection connect() {
+        Connection connection = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/campus_db", "root", "yourpassword");
+        } catch (Exception e) {
+            System.out.println("Connection failed: " + e.getMessage());
+        }
+        return connection;
+    }
+}
+
+
+package operations;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+public class CourseOperations {
+
+    public static void main(String[] args) {
+        CourseOperations obj = new CourseOperations();
+
+        obj.addModule("Cyber Security", 4);
+        obj.addModule("Cloud Computing", 3);
+    }
+
+    public void addModule(String title, int credits) {
+        DatabaseLink db = new DatabaseLink();
+        Connection connection = db.connect();
+        PreparedStatement ps = null;
+
+        try {
+            String query = "INSERT INTO modules (module_title, credit_value) VALUES (?, ?)";
+            ps = connection.prepareStatement(query);
+            ps.setString(1, title);
+            ps.setInt(2, credits);
+
+            System.out.println("Executing query: " + ps);
+            ps.executeUpdate();
+            System.out.println("Module inserted successfully!");
+        } catch (Exception e) {
+            System.out.println("Insertion failed: " + e.getMessage());
+        }
+    }
+}
+
+
+
+

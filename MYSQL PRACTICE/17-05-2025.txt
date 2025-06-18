@@ -1,0 +1,40 @@
+SHOW DATABASES;
+
+CREATE DATABASE vit;
+
+USE vit;
+
+CREATE TABLE vitap(
+    f_name VARCHAR(200),
+    reg_no VARCHAR(20) PRIMARY KEY,
+    school VARCHAR(100),
+    passout_yr INT
+);
+
+INSERT INTO vitap(f_name, reg_no, school, passout_yr) VALUES
+('John', '25BCE1001', 'SCOPE', 2026),
+('Mike', '25BCE1002', 'SENSE', 2026),
+('Lily', '25BCE1003', 'VSL', 2026),
+('Emma', '25BCE1004', 'MECH', 2026),
+('Ryan', '25BCE1005', 'SCOPE', 2026),
+('Sara', '25BCE1006', 'SENSE', 2026),
+('Leo',  '25BCE1007', 'VSL', 2026),
+('Nina', '25BCE1008', 'MECH', 2026);
+
+SELECT * FROM vitap;
+
+ALTER TABLE vitap ADD (
+    s_phnum VARCHAR(200)
+);
+
+DESC vitap;
+
+ALTER TABLE vitap ADD (
+    S_country VARCHAR(100) DEFAULT 'India'
+);
+
+UPDATE vitap SET f_name = 'Michael', reg_no = '25BCE1999' WHERE f_name = 'Mike';
+UPDATE vitap SET f_name = 'Lilian', reg_no = '25BCE1998' WHERE f_name = 'Lily';
+UPDATE vitap SET f_name = 'Emilia', reg_no = '25BCE1997' WHERE f_name = 'Emma';
+
+SELECT * FROM vitap;

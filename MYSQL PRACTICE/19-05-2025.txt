@@ -1,0 +1,52 @@
+SHOW DATABASES;
+
+CREATE TABLE Worker (
+    WORKER_ID INT NOT NULL PRIMARY KEY ,
+    FIRST_NAME CHAR(25),
+    LAST_NAME CHAR(25),
+    SALARY INT,
+    JOINING_DATE DATETIME,
+    DEPARTMENT CHAR(25)
+);
+
+INSERT INTO Worker 
+(WORKER_ID, FIRST_NAME, LAST_NAME, SALARY, JOINING_DATE, DEPARTMENT) VALUES
+(101, 'Arjun', 'Reddy', 120000, '2015-03-15 09:00:00', 'HR'),
+(102, 'Sneha', 'Patel', 95000, '2012-08-21 09:00:00', 'Admin'),
+(103, 'Karan', 'Mehra', 320000, '2015-03-15 09:00:00', 'HR'),
+(104, 'Ravi', 'Kapoor', 520000, '2015-03-15 09:00:00', 'Admin'),
+(105, 'Neha', 'Sharma', 480000, '2012-08-21 09:00:00', 'Admin'),
+(106, 'Tarun', 'Malik', 210000, '2012-08-21 09:00:00', 'Finance'),
+(107, 'Raj', 'Gupta', 85000, '2021-02-11 09:00:00', 'Finance'),
+(108, 'Priya', 'Desai', 97000, '2012-03-10 09:00:00', 'Admin');
+
+SELECT FIRST_NAME AS employee_name FROM Worker;
+
+DESC Worker;
+
+SELECT * FROM Worker;
+
+SELECT first_name, salary FROM worker WHERE worker_id > 102;
+
+SELECT first_name, department FROM worker WHERE salary <= 210000;
+
+SELECT first_name, salary FROM worker WHERE department != 'HR';
+
+SELECT first_name, joining_date FROM worker WHERE salary >= 320000;
+
+SELECT first_name, joining_date FROM worker WHERE salary < 100000;
+
+SELECT FIRST_NAME, DEPARTMENT FROM Worker WHERE SALARY > 30000;
+
+SELECT FIRST_NAME, DEPARTMENT FROM Worker WHERE SALARY > 200000 AND DEPARTMENT = 'HR';
+
+SELECT * FROM Worker WHERE SALARY < 200000 AND (DEPARTMENT = 'HR' OR DEPARTMENT = 'Admin');
+
+SELECT * FROM worker WHERE salary > 100000 AND salary < 300000 AND department = 'Admin' OR department = 'HR';
+
+-- This last query is syntactically incorrect; let's fix it and match intent:
+SELECT * FROM Worker 
+WHERE WORKER_ID IN (
+    SELECT WORKER_ID FROM Worker WHERE WORKER_ID % 2 = 0
+)
+AND SALARY = (SELECT MAX(SALARY) FROM Worker);
